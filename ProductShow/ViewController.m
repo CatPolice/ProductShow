@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "Product.h"
 
 
 @interface ViewController () <NSTableViewDataSource, NSTableViewDelegate>
@@ -29,9 +30,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
+    [Product getProductList:nil Success:^(NSURLSessionDataTask *task, NSArray *result) {
+        
+//        NSLog(@"%@",result);
+        _storeArray = [[NSMutableArray alloc] initWithArray:result];
+        
+        [self.cityStoreTableview reloadData];
+        [self.detailedTableview reloadData];
+        
+    } Failure:^(NSURLSessionDataTask *task, NSError *error) {
+        
+    }];
     
-    
-    _storeArray = [[NSMutableArray alloc] initWithArray:@[@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@""]];
     
 }
 
@@ -57,7 +68,10 @@
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     if (tableView == self.cityStoreTableview) {
-        return @"1";
+        
+        Product *product = _storeArray[row];
+        return product.storeName;
+        
     }else if(tableView == self.detailedTableview){
         
         if ([tableColumn.identifier isEqualToString:@"Monitoring"]) {
@@ -86,7 +100,7 @@
 }
 
 - (void)tableView:(NSTableView *)tableView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    
+    NSLog(@"%@",object);
 }
 
 - (IBAction)cityStoreTableviewAction:(NSTableView *)sender {
@@ -94,6 +108,7 @@
 }
 
 - (IBAction)detailedTableviewAction:(NSTableView *)sender {
+     NSLog(@"%zd",sender.selectedRow);
 }
 
 
